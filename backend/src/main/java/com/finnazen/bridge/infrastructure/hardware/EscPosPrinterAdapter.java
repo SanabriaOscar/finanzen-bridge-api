@@ -6,6 +6,7 @@ import com.finnazen.bridge.domain.model.PrintTicketCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import com.finnazen.bridge.shared.constants.ThermalPrintConstants;
 import org.springframework.stereotype.Component;
 
 import javax.print.Doc;
@@ -43,30 +44,97 @@ public class EscPosPrinterAdapter implements PrinterPort {
 
     @Override
     public void printTicket(PrintTicketCommand command) {
-        int cols = lineWidth();
+        int cols = lineWidth(command);
+        if (command.printLines() != null && !command.printLines().isEmpty()) {
+            EscPosEncoder enc = EscPosEncoder.create();
+            renderFormattedLines(enc, command.printLines(), cols);
+            enc.blankLines(2).cutPartial();
+            sendRaw(enc.toBytes());
+            log.info("Ticket layout impreso ticketId={} lineas={} printer={}",
+                    command.ticketId(), command.printLines().size(), printerName());
+            return;
+        }
+        log.warn("PRINT_TICKET sin printLines; usando formato reducido ticketId={}", command.ticketId());
+        printLegacyTicket(command, cols);
+    }
+
+    private void renderFormattedLines(EscPosEncoder enc,
+                                      List<PrintTicketCommand.FormattedPrintLine> lines,
+                                      int cols) {
+        for (PrintTicketCommand.FormattedPrintLine row : lines) {
+            if (row == null) {
+                continue;
+            }
+            String text = row.text() != null ? row.text() : "";
+            if (ThermalPrintConstants.ALIGN_CENTER.equalsIgnoreCase(row.align())) {
+                enc.alignCenter();
+            } else {
+                enc.alignLeft();
+            }
+            enc.bold(row.bold());
+            if (text.isBlank()) {
+                enc.blankLines(1);
+            } else {
+                enc.line(truncate(text, cols));
+            }
+            enc.bold(false);
+        }
+    }
+
+    private void printLegacyTicket(PrintTicketCommand command, int cols) {
         EscPosEncoder enc = EscPosEncoder.create()
                 .alignCenter()
                 .bold(true)
-                .line("FINNAZEN")
-                .bold(false)
-                .line("Ticket: " + truncate(safe(command.ticketId()), cols))
-                .line(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                .line(truncate(safe(command.businessName(), "FINNAZEN"), cols))
+                .bold(false);
+
+        if (command.dateLabel() != null && !command.dateLabel().isBlank()) {
+            enc.line(truncate(command.dateLabel(), cols));
+        } else {
+            enc.line(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        }
+        enc.line("Ticket: " + truncate(safe(command.ticketId()), cols))
                 .alignLeft()
                 .separator(cols);
+
+        if (command.customerName() != null && !command.customerName().isBlank()) {
+            enc.line("Cliente: " + truncate(command.customerName(), cols));
+        }
+        if (command.sellerName() != null && !command.sellerName().isBlank()) {
+            enc.line("Vendedor: " + truncate(command.sellerName(), cols));
+        }
+        if (command.payMethodName() != null && !command.payMethodName().isBlank()) {
+            enc.line("Pago: " + truncate(command.payMethodName(), cols));
+        }
+        enc.separator(cols);
 
         if (command.items() != null) {
             for (PrintTicketCommand.PrintTicketLine item : command.items()) {
                 String name = truncate(safe(item.name()), cols);
                 enc.line(name);
-                enc.line(String.format(Locale.US, "  %.2f x %.0f = %.0f",
-                        item.qty(), item.price(), item.qty() * item.price()));
+                double qty = item.qty();
+                double subtotal = qty * item.price();
+                if (qty > 1.001) {
+                    enc.line(String.format(Locale.forLanguageTag("es-CO"),
+                            "Cant: %.0f  V.unit: %,.0f  Total: %,.0f", qty, item.price(), subtotal));
+                } else {
+                    enc.line(String.format(Locale.forLanguageTag("es-CO"),
+                            "V.unit: %,.0f  Total: %,.0f", item.price(), subtotal));
+                }
             }
         }
 
-        enc.separator(cols)
-                .bold(true)
-                .line(String.format(Locale.US, "TOTAL: %.0f", command.total()))
+        enc.separator(cols);
+        if (command.totalBase() != null && command.totalTax() != null && command.totalTax() > 0) {
+            enc.line(String.format(Locale.forLanguageTag("es-CO"), "Base: %,.0f  IVA: %,.0f",
+                    command.totalBase(), command.totalTax()));
+        }
+        enc.bold(true)
+                .line(String.format(Locale.forLanguageTag("es-CO"), "TOTAL A PAGAR: %,.0f", command.total()))
                 .bold(false)
+                .alignCenter()
+                .line("Gracias por su compra")
+                .line("Finnazen POS")
                 .blankLines(2)
                 .cutPartial();
 
@@ -175,8 +243,19 @@ public class EscPosPrinterAdapter implements PrinterPort {
         return value != null ? value : "";
     }
 
+    private static String safe(String value, String fallback) {
+        return value != null && !value.isBlank() ? value : fallback;
+    }
+
     private static String truncate(String value, int max) {
         return value.length() <= max ? value : value.substring(0, max - 1) + ".";
+    }
+
+    private int lineWidth(PrintTicketCommand command) {
+        if (command.paperWidthMm() != null && command.paperWidthMm() > 0) {
+            return EscPosEncoder.columnsForPaperWidth(command.paperWidthMm());
+        }
+        return EscPosEncoder.columnsForPaperWidth(properties.printer().paperWidthMm());
     }
 
     private int lineWidth() {

@@ -13,9 +13,13 @@ import com.finnazen.bridge.domain.model.PrintTicketCommand;
 import com.finnazen.bridge.domain.model.WeightReading;
 import com.finnazen.bridge.shared.constants.BridgeConstants;
 import com.finnazen.bridge.shared.constants.BridgeEventTypes;
+import com.finnazen.bridge.shared.constants.ThermalPrintConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class BridgeHardwareServiceImpl implements IBridgeHardwareService {
@@ -80,16 +84,61 @@ public class BridgeHardwareServiceImpl implements IBridgeHardwareService {
 
     private BridgeEnvelope printTicket(JsonNode payload) {
         try {
-            PrintTicketCommand command = objectMapper.treeToValue(payload, PrintTicketCommand.class);
+            PrintTicketCommand command = parsePrintCommand(payload);
+            int lineCount = command.printLines() != null ? command.printLines().size() : 0;
+            log.info("PRINT_TICKET ticketId={} printLines={}", command.ticketId(), lineCount);
             printerPort.printTicket(command);
             ObjectNode ok = objectMapper.createObjectNode();
             ok.put("ticketId", command.ticketId());
             ok.put("status", "OK");
+            ok.put("printLines", lineCount);
             return envelope(BridgeEventTypes.PRINT_STATUS, ok);
         } catch (Exception ex) {
             log.warn("Error imprimiendo ticket: {}", ex.getMessage());
             return errorEnvelope(BridgeConstants.MSG_PRINT_FAIL);
         }
+    }
+
+    private PrintTicketCommand parsePrintCommand(JsonNode payload) throws com.fasterxml.jackson.core.JsonProcessingException {
+        PrintTicketCommand base = objectMapper.treeToValue(payload, PrintTicketCommand.class);
+        List<PrintTicketCommand.FormattedPrintLine> lines = parsePrintLines(payload.path("printLines"));
+        if (lines.isEmpty()) {
+            return base;
+        }
+        return new PrintTicketCommand(
+                base.ticketId(),
+                base.items(),
+                base.total(),
+                base.tenantId(),
+                base.businessName(),
+                base.customerName(),
+                base.payMethodName(),
+                base.sellerName(),
+                base.dateLabel(),
+                base.paperWidthMm(),
+                base.totalBase(),
+                base.totalTax(),
+                base.publicSaleId(),
+                lines
+        );
+    }
+
+    private List<PrintTicketCommand.FormattedPrintLine> parsePrintLines(JsonNode node) {
+        if (node == null || !node.isArray()) {
+            return List.of();
+        }
+        List<PrintTicketCommand.FormattedPrintLine> out = new ArrayList<>();
+        for (JsonNode row : node) {
+            if (row == null || row.isNull()) {
+                continue;
+            }
+            out.add(new PrintTicketCommand.FormattedPrintLine(
+                    row.path("text").asText(""),
+                    row.path("align").asText(ThermalPrintConstants.ALIGN_LEFT),
+                    row.path("bold").asBoolean(false)
+            ));
+        }
+        return out;
     }
 
     private BridgeEnvelope testPrinter() {

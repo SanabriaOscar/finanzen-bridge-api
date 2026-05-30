@@ -15,10 +15,11 @@ class EscPosPrinterAdapterTest {
     }
 
     @Test
-    @DisplayName("columnsForPaperWidth usa 48 cols en rollo 80mm")
-    void columns_80mm() {
+    @DisplayName("columnsForPaperWidth usa columnas según mm")
+    void columns_by_width() {
         assertThat(EscPosEncoder.columnsForPaperWidth(80)).isEqualTo(EscPosEncoder.COLS_80MM);
         assertThat(EscPosEncoder.columnsForPaperWidth(58)).isEqualTo(EscPosEncoder.COLS_58MM);
+        assertThat(EscPosEncoder.columnsForPaperWidth(50)).isEqualTo(EscPosEncoder.COLS_50MM);
     }
 
     @Test
