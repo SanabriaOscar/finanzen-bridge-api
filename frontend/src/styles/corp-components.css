@@ -1,0 +1,309 @@
+/**
+ * =============================================================================
+ * FINANZEN — CORPORATE REUSABLE COMPONENTS (global classes)
+ * =============================================================================
+ * Clases globales para patrones repetidos. Usar EN HTML junto a clases locales
+ * existentes; no eliminar estilos locales hasta verificar visualmente.
+ *
+ * CLASES PRINCIPALES
+ * - .corp-hero              Banner naranja (welcome, aprobaciones, simulador).
+ * - .corp-page-header       Cabecera de módulo con título + subtítulo.
+ * - .corp-card-header        Header naranja en mat-card de listados.
+ * - .btn-nuevo-empresarial   Botón azul "Nuevo X" en listados CRUD.
+ * - .corp-edit-btn           Botón editar en tablas (alias .edit-btn).
+ * - .corp-delete-btn         Botón eliminar (alias .delete-btn).
+ * - .corp-selection-panel    Bloque usuario seleccionado (permisos).
+ * - .corp-page-wrap          Contenedor scroll horizontal módulos anchos.
+ * =============================================================================
+ */
+
+/* ---------------------------------------------------------------------------
+ * HERO — Banner corporativo naranja
+ * HTML: <header class="hero corp-hero"> o <mat-card class="hero corp-hero">
+ * Usado en: welcome, user-deletions, simulator, academy (añadir clase).
+ * --------------------------------------------------------------------------- */
+.corp-hero {
+  border: 0;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  background: var(--color-brand-gradient);
+  color: var(--corp-text-inverse);
+  box-shadow: var(--color-brand-gradient-shadow-strong);
+}
+
+.corp-hero h1,
+.corp-hero h2,
+.corp-hero h3,
+.corp-hero p {
+  color: var(--corp-text-inverse);
+}
+
+/* ---------------------------------------------------------------------------
+ * PAGE HEADER — Cabecera de módulo (jerarquía, membership, etc.)
+ * HTML: <div class="page-header corp-page-header">
+ * Usado en: hierarchy-tree (+ page-header__actions hijo).
+ * --------------------------------------------------------------------------- */
+.corp-page-header {
+  margin-bottom: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  background: var(--color-brand-gradient);
+  color: var(--corp-text-inverse);
+  box-shadow: var(--color-brand-gradient-shadow);
+}
+
+.corp-page-header h1,
+.corp-page-header h2 {
+  margin: 0 0 0.35rem;
+  color: var(--corp-text-inverse);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.corp-page-header .subtitle,
+.corp-page-header p.subtitle {
+  color: var(--corp-text-inverse);
+  margin: 0 0 1rem;
+  max-width: 44rem;
+  line-height: 1.45;
+}
+
+.corp-page-header a[mat-stroked-button],
+.corp-page-header button[mat-stroked-button] {
+  border-color: rgba(255, 255, 255, 0.8) !important;
+  color: var(--corp-text-inverse) !important;
+}
+
+.corp-page-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* ---------------------------------------------------------------------------
+ * CARD HEADER — Listados CRUD (mat-card)
+ * HTML: <mat-card-header class="mat-card-header corp-card-header">
+ * Usado en: list-user, list-product, list-client, form-list, gestion-permisos.
+ * --------------------------------------------------------------------------- */
+.corp-card-header,
+.mat-card-header.corp-card-header {
+  background: var(--color-brand-gradient) !important;
+  color: var(--corp-text-inverse) !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 1.25rem;
+}
+
+.corp-card-header .mat-card-title,
+.mat-card-header.corp-card-header .mat-card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  margin: 0;
+  color: var(--corp-text-inverse);
+}
+
+.corp-card-header .mat-card-subtitle,
+.mat-card-header.corp-card-header .mat-card-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* ---------------------------------------------------------------------------
+ * BOTÓN NUEVO — Acción principal en listados
+ * HTML: <button mat-raised-button class="btn-nuevo-empresarial">
+ * Usado en: form-list, list-user, list-client, list-product, list-category.
+ * --------------------------------------------------------------------------- */
+button.btn-nuevo-empresarial.mat-mdc-raised-button,
+.container-fluid button.btn-nuevo-empresarial.mat-mdc-raised-button {
+  background: var(--color-btn-new-gradient) !important;
+  color: var(--corp-text-inverse) !important;
+  padding: 10px 24px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: var(--color-btn-new-shadow);
+  border: none;
+}
+
+button.btn-nuevo-empresarial:hover,
+.btn-nuevo-empresarial:hover {
+  box-shadow: var(--color-btn-new-shadow-hover);
+}
+
+/* ---------------------------------------------------------------------------
+ * TABLA — Botones editar / eliminar en filas
+ * HTML: class="edit-btn corp-edit-btn" | class="delete-btn corp-delete-btn"
+ * Usado en: form-list, list-user, list-client, list-product, list-category.
+ * --------------------------------------------------------------------------- */
+.corp-edit-btn,
+.corp-delete-btn,
+.edit-btn,
+.delete-btn {
+  background-color: var(--corp-bg-white);
+  border: 1px solid var(--corp-border-400);
+  margin-right: 4px;
+  padding: 4px 8px;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.corp-edit-btn,
+.edit-btn {
+  color: var(--color-action-edit);
+  border-color: var(--color-action-edit);
+}
+
+.corp-edit-btn:hover,
+.edit-btn:hover {
+  background-color: var(--color-action-edit-hover-bg);
+  color: var(--corp-text-inverse);
+}
+
+.corp-delete-btn,
+.delete-btn {
+  color: var(--color-action-delete);
+  border-color: var(--color-action-delete);
+}
+
+.corp-delete-btn:hover,
+.delete-btn:hover {
+  background-color: var(--color-action-delete-hover-bg);
+  color: var(--corp-text-inverse);
+}
+
+/* ---------------------------------------------------------------------------
+ * SELECCIÓN — Usuario / ítem activo
+ * HTML: class="selected-user-info corp-selection-panel"
+ * Usado en: gestion-permisos.
+ * --------------------------------------------------------------------------- */
+.corp-selection-panel {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 1rem;
+  background-color: var(--color-selection-bg);
+  border-radius: 8px;
+  border-left: 4px solid var(--color-selection-border);
+}
+
+.corp-selection-panel__icon {
+  color: var(--color-selection-icon);
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+}
+
+/* ---------------------------------------------------------------------------
+ * PAGE WRAP — Contenedor con scroll horizontal (módulos anchos)
+ * HTML: <div class="page-wrap corp-page-wrap">
+ * Usado en: hierarchy-tree, hierarchy-manage.
+ * --------------------------------------------------------------------------- */
+.corp-page-wrap {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ---------------------------------------------------------------------------
+ * SHELL — Referencia (preferir tokens en component.css del layout)
+ * --------------------------------------------------------------------------- */
+.corp-shell-header {
+  background-color: var(--color-shell-header-bg);
+  color: var(--corp-text-inverse);
+}
+
+.corp-shell-sidebar {
+  background-color: var(--color-shell-sidebar-bg);
+  border-color: var(--color-shell-sidebar-border);
+}
+
+.corp-shell-content {
+  background-color: var(--color-shell-content-bg);
+}
+
+@media (max-width: 576px) {
+  .corp-page-header {
+    padding: 0.85rem 1rem;
+  }
+
+  .corp-page-header h1,
+  .corp-page-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .corp-page-header__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .corp-page-header__actions a,
+  .corp-page-header__actions button {
+    width: 100%;
+    margin: 0 !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .corp-edit-btn,
+  .corp-delete-btn,
+  .edit-btn,
+  .delete-btn {
+    margin: 0;
+    flex: 1;
+    width: auto;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * BOTONES CORPORATIVOS (landing / index-page / monolith)
+ * HTML: class="btn btn-primary btn-corporate-primary" o solo btn-corporate-primary
+ * --------------------------------------------------------------------------- */
+.btn-corporate-primary,
+.btn-primary.btn-corporate-primary,
+.btn-create-account.btn-corporate-primary,
+.btn-login.btn-corporate-primary,
+.btn-proyectos.btn-corporate-primary {
+  background: var(--color-brand-gradient) !important;
+  color: var(--corp-text-inverse) !important;
+  border-color: var(--corp-primary-900) !important;
+  font-weight: 700;
+}
+
+.btn-corporate-primary:hover,
+.btn-primary.btn-corporate-primary:hover,
+.btn-create-account.btn-corporate-primary:hover,
+.btn-login.btn-corporate-primary:hover,
+.btn-proyectos.btn-corporate-primary:hover {
+  filter: brightness(0.97);
+}
+
+/* ---------------------------------------------------------------------------
+ * HERO VARIANTS — comparten gradiente corporativo
+ * Añadir corp-hero en HTML junto a mp-hero, hub-hero, hero, etc.
+ * --------------------------------------------------------------------------- */
+.mp-hero.corp-hero,
+.hub-hero.corp-hero,
+.hero.corp-hero {
+  border-radius: 12px;
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--color-brand-gradient-shadow-membership);
+}
+
+.hub-hero.corp-hero {
+  padding: 1.25rem 1.5rem;
+}
+
+.hero.corp-hero {
+  border-radius: 10px;
+}
+
+/* Landing pública (index-page hero azul→naranja) */
+.corp-landing-hero {
+  background: var(--color-landing-hero-gradient);
+  min-height: 45vh;
+}

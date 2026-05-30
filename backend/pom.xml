@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.finnazen</groupId>
+        <artifactId>finanzen-bridge-api</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>finanzen-bridge-backend</artifactId>
+    <name>Finnazen Bridge Backend</name>
+    <description>Spring Boot — WebSocket hardware + REST admin</description>
+
+    <properties>
+        <bridge.ui.dir>${project.basedir}/../frontend</bridge.ui.dir>
+        <bridge.ui.dist>${bridge.ui.dir}/dist/finanzen-bridge-ui</bridge.ui.dist>
+        <!-- Entregable instalador Windows (convención module/dist) -->
+        <bridge.dist.dir>${project.basedir}/dist</bridge.dist.dir>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fazecast</groupId>
+            <artifactId>jSerialComm</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>com.finnazen.bridge.FinnazenBridgeApplication</mainClass>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>${java.version}</release>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>with-ui</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.eirslett</groupId>
+                        <artifactId>frontend-maven-plugin</artifactId>
+                        <version>1.15.1</version>
+                        <configuration>
+                            <workingDirectory>${bridge.ui.dir}</workingDirectory>
+                            <installDirectory>${project.build.directory}/frontend-toolchain</installDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>install-node-and-npm</id>
+                                <goals><goal>install-node-and-npm</goal></goals>
+                                <configuration>
+                                    <nodeVersion>v20.18.0</nodeVersion>
+                                    <npmVersion>10.8.2</npmVersion>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>npm-install</id>
+                                <goals><goal>npm</goal></goals>
+                                <configuration>
+                                    <!-- ignore-scripts: evita ERR_INVALID_ARG_TYPE en postinstall esbuild (npm 9 + Windows) -->
+                                    <arguments>install --ignore-scripts</arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>npm-build-ui</id>
+                                <goals><goal>npm</goal></goals>
+                                <phase>generate-resources</phase>
+                                <configuration><arguments>run build</arguments></configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>3.3.1</version>
+                        <executions>
+                            <execution>
+                                <id>copy-bridge-ui</id>
+                                <phase>process-resources</phase>
+                                <goals><goal>copy-resources</goal></goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${bridge.ui.dist}</directory>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>win-exe</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.panteleyev</groupId>
+                        <artifactId>jpackage-maven-plugin</artifactId>
+                        <version>1.6.5</version>
+                        <configuration>
+                            <name>finanzen-bridge</name>
+                            <appVersion>1.0.0</appVersion>
+                            <vendor>Finnazen</vendor>
+                            <description>Finnazen Bridge POS — hardware local</description>
+                            <destination>${bridge.dist.dir}</destination>
+                            <input>${project.build.directory}</input>
+                            <mainJar>${project.build.finalName}.jar</mainJar>
+                            <mainClass>com.finnazen.bridge.FinnazenBridgeApplication</mainClass>
+                            <javaOptions>
+                                <option>-Dfile.encoding=UTF-8</option>
+                            </javaOptions>
+                            <winMenu>true</winMenu>
+                            <winShortcut>true</winShortcut>
+                            <winDirChooser>true</winDirChooser>
+                            <type>exe</type>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>jpackage-exe</id>
+                                <phase>package</phase>
+                                <goals><goal>jpackage</goal></goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

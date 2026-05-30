@@ -1,0 +1,27 @@
+finnazen:
+  bridge:
+    host: 127.0.0.1
+    port: 9095
+    ws-path: /ws
+    pairing-token: ${BRIDGE_PAIRING_TOKEN:finnazen-bridge-local-dev}
+    open-browser-on-start: true
+    scale:
+      enabled: false
+      port-name: COM3
+    printer:
+      enabled: true
+      # Xprinter XP-58IIT — térmica 58 mm, ESC/POS, USB
+      name: ${BRIDGE_PRINTER_NAME:XP-58}
+      paper-width-mm: 50
+
+server:
+  port: ${finnazen.bridge.port}
+  address: ${finnazen.bridge.host}
+
+spring:
+  application:
+    name: finnazen-bridge
+
+logging:
+  level:
+    com.finnazen.bridge: INFO

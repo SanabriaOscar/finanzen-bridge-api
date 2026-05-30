@@ -1,0 +1,16 @@
+/** Tipos de evento compartidos bridge ↔ Angular cloud */
+export const BRIDGE_EVENT_TYPES = {
+  BRIDGE_READY: 'BRIDGE_READY',
+  WEIGHT_CHANGED: 'WEIGHT_CHANGED',
+  SCANNER_INPUT: 'SCANNER_INPUT',
+  PRINT_STATUS: 'PRINT_STATUS',
+  ERROR: 'ERROR',
+  HEARTBEAT: 'HEARTBEAT',
+  PING: 'PING',
+  GET_STATUS: 'GET_STATUS',
+  PRINT_TICKET: 'PRINT_TICKET',
+  TEST_PRINTER: 'TEST_PRINTER',
+  REQUEST_WEIGHT: 'REQUEST_WEIGHT',
+} as const;
+
+export type BridgeEventType = typeof BRIDGE_EVENT_TYPES[keyof typeof BRIDGE_EVENT_TYPES];

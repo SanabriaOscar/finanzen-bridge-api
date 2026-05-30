@@ -1,0 +1,52 @@
+<div class="page">
+  <header class="corp-hero mp-hero">
+    <h1>{{ appName }} — Panel local</h1>
+    <p>Administra báscula, impresora y escáner. WebSocket: {{ wsUrl }}</p>
+  </header>
+
+  <section class="card" style="margin-top: 1rem;">
+    <p>
+      <span class="status-dot" [class.online]="connected" [class.offline]="!connected"></span>
+      {{ connected ? 'Conectado al bridge' : 'Desconectado — inicie finanzen-bridge.exe' }}
+    </p>
+    <p>Clientes WS: {{ clients }} · Báscula: {{ scaleAvailable ? 'Sí' : 'No' }} · Impresora: {{ printerAvailable ? 'Sí' : 'No' }}</p>
+    <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.75rem;">
+      <button type="button" class="btn-corporate-primary" (click)="ping()">Ping</button>
+      <button type="button" class="btn-corporate-primary" (click)="requestWeight()">Leer peso</button>
+      <button type="button" class="btn-corporate-primary" (click)="testPrinter()">Prueba impresora</button>
+    </div>
+  </section>
+
+  <section class="card scanner-card" style="margin-top: 1rem;">
+    <h2 style="margin-top:0;">Prueba escáner (QR / código de barras)</h2>
+    <p class="scanner-hint">
+      El lector USB HID funciona como teclado. Haga clic en el campo, escanee y verá el código abajo.
+    </p>
+    <label class="scanner-label" for="scanner-input">Campo de captura</label>
+    <input
+      #scannerInput
+      id="scanner-input"
+      class="scanner-input"
+      type="text"
+      autocomplete="off"
+      placeholder="Haga clic aquí y escanee..."
+      [(ngModel)]="scannerBuffer"
+      (keydown.enter)="onScannerEnter($event)"
+    />
+    <div class="scanner-actions">
+      <button type="button" class="btn-corporate-primary" (click)="focusScanner()">Enfocar escáner</button>
+      <button type="button" class="btn-corporate-secondary" (click)="clearScan()">Limpiar</button>
+    </div>
+    <p class="scanner-result">
+      Último código: <strong>{{ lastScan || '—' }}</strong>
+    </p>
+  </section>
+
+  <section class="card" style="margin-top: 1rem;">
+    <h2 style="margin-top:0;">Eventos</h2>
+    <p *ngIf="!logs.length" style="color: var(--corp-text-500);">Sin eventos aún.</p>
+    <ul style="margin:0; padding-left: 1.1rem;">
+      <li *ngFor="let log of logs">{{ log }}</li>
+    </ul>
+  </section>
+</div>

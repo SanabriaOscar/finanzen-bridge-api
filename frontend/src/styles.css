@@ -1,0 +1,33 @@
+@import './styles/corp-colors.css';
+@import './styles/corp-components.css';
+
+body {
+  margin: 0;
+  font-family: Segoe UI, Roboto, Arial, sans-serif;
+  background: var(--color-shell-content-bg);
+  color: var(--corp-text-900);
+}
+
+.page {
+  max-width: 960px;
+  margin: 1.5rem auto;
+  padding: 0 1rem;
+}
+
+.card {
+  background: var(--corp-bg-white);
+  border: 1px solid var(--corp-border-300);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 0.4rem;
+}
+.status-dot.online { background: var(--corp-success-700); }
+.status-dot.offline { background: var(--corp-danger-material); }

@@ -1,0 +1,37 @@
+{
+  "name": "finanzen-bridge-ui",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "ng build finanzen-bridge-ui --configuration production",
+    "start": "ng serve finanzen-bridge-ui --port 4300 --configuration development",
+    "fix": "npx npm@10.8.2 install --no-fund --no-audit",
+    "reinstall": "npx rimraf@5 node_modules && npm run fix"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@angular/animations": "^17.3.12",
+    "@angular/common": "^17.3.12",
+    "@angular/compiler": "^17.3.12",
+    "@angular/core": "^17.3.12",
+    "@angular/forms": "^17.3.12",
+    "@angular/platform-browser": "^17.3.12",
+    "@angular/platform-browser-dynamic": "^17.3.12",
+    "@angular/router": "^17.3.12",
+    "rxjs": "^7.8.1",
+    "tslib": "^2.6.2",
+    "zone.js": "^0.14.10"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^17.3.17",
+    "@angular/cli": "^17.3.17",
+    "@angular/compiler-cli": "^17.3.12",
+    "@babel/core": "^7.26.0",
+    "@babel/helper-define-polyfill-provider": "^0.6.3",
+    "babel-plugin-polyfill-corejs3": "^0.10.6",
+    "babel-plugin-polyfill-regenerator": "^0.6.4",
+    "typescript": "~5.4.5"
+  }
+}

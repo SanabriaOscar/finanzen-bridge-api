@@ -1,0 +1,56 @@
+h1 {
+  margin: 0 0 0.35rem;
+  font-size: 1.45rem;
+}
+
+p {
+  margin: 0.25rem 0;
+}
+
+button.btn-corporate-primary {
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+  cursor: pointer;
+}
+
+button.btn-corporate-secondary {
+  border: 1px solid var(--corp-border-300);
+  background: var(--corp-bg-white);
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+  cursor: pointer;
+}
+
+.scanner-hint {
+  color: var(--corp-text-500);
+  font-size: 0.92rem;
+}
+
+.scanner-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.scanner-input {
+  width: 100%;
+  max-width: 420px;
+  box-sizing: border-box;
+  padding: 0.6rem 0.75rem;
+  border: 2px solid var(--corp-primary-500);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.scanner-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.scanner-result {
+  margin-top: 0.75rem;
+}
