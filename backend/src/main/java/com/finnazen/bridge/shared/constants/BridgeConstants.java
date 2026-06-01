@@ -17,4 +17,9 @@ public final class BridgeConstants {
     public static final String MSG_PRINT_OK = "Impresión enviada";
     public static final String MSG_PRINT_FAIL = "No se pudo imprimir";
     public static final String MSG_STATUS_OK = "Estado del bridge";
+    public static final String MSG_SCANNER_CODE_REQUIRED = "Código de escaneo vacío";
+
+    public static final String PAYLOAD_CODE = "code";
+    public static final String PAYLOAD_SOURCE = "source";
+    public static final String SCANNER_SOURCE_HID = "HID";
 }
