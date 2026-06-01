@@ -12,7 +12,12 @@ public record BridgeProperties(
         ScaleProperties scale,
         PrinterProperties printer
 ) {
-    public record ScaleProperties(boolean enabled, String portName) {
+  public record ScaleProperties(boolean enabled, String portName, double mockWeightKg, int pollIntervalMs) {
+        public ScaleProperties {
+            if (pollIntervalMs <= 0) {
+                pollIntervalMs = 500;
+            }
+        }
     }
 
     /**

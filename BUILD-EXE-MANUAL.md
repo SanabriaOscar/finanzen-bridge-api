@@ -217,6 +217,26 @@ Ese **único archivo** es el que copian los cajeros. No envíes la carpeta `fina
 
 **No necesita Java** instalado en la PC del cajero.
 
+**En otras PCs:** solo copia/ejecuta `finanzen-bridge-1.0.0.exe`. **No** hace falta WiX ni JDK en el cajero (solo en tu PC al compilar).
+
+---
+
+## 7c. Báscula → ventas (WebSocket)
+
+1. Bridge instalado y en ejecución (`9095`).
+2. En `application.yml` del bridge (o variables):
+
+```yaml
+finnazen.bridge.scale.enabled: true
+finnazen.bridge.scale.port-name: COM3   # puerto de la báscula en Windows
+finnazen.bridge.scale.mock-weight-kg: 0  # solo pruebas sin hardware: ej. 1.5
+```
+
+3. Front Finnanzen (`:4200`): formulario venta, producto con modo **WEIGHT**, no marcar “Peso manual”.
+4. El front escucha `WEIGHT_CHANGED` y rellena **Peso (gr)** automáticamente.
+
+Eventos: `REQUEST_WEIGHT` (pull) y `WEIGHT_CHANGED` (push cada ~500 ms si el peso cambia).
+
 **Token por defecto (desarrollo):** `finnazen-bridge-local-dev`
 
 Producción — variable de entorno antes de arrancar:

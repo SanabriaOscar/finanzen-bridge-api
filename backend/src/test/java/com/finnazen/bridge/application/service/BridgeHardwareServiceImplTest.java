@@ -30,7 +30,7 @@ class BridgeHardwareServiceImplTest {
     void setUp() {
         BridgeProperties props = new BridgeProperties(
                 "127.0.0.1", 9095, "/ws", "token", false,
-                new BridgeProperties.ScaleProperties(false, "COM1"),
+                new BridgeProperties.ScaleProperties(false, "COM1", 0, 500),
                 new BridgeProperties.PrinterProperties(false, "default", 80)
         );
         service = new BridgeHardwareServiceImpl(scalePort, printerPort, publisher, props, new ObjectMapper());

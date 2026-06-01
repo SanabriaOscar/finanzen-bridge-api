@@ -6,8 +6,11 @@ finnazen:
     pairing-token: ${BRIDGE_PAIRING_TOKEN:finnazen-bridge-local-dev}
     open-browser-on-start: true
     scale:
+      # true + mock-weight-kg para pruebas sin báscula física; true + port-name para COM real (fase serial)
       enabled: false
       port-name: COM3
+      mock-weight-kg: 0
+      poll-interval-ms: 500
     printer:
       enabled: true
       # Xprinter XP-58IIT — térmica 58 mm, ESC/POS, USB

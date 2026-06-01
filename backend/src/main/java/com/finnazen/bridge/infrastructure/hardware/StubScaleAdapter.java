@@ -22,6 +22,10 @@ public class StubScaleAdapter implements ScalePort {
 
     @Override
     public WeightReading readWeight() {
+        double mockKg = properties.scale().mockWeightKg();
+        if (mockKg > 0) {
+            return new WeightReading(mockKg, UNIT_KG);
+        }
         return new WeightReading(0, UNIT_KG);
     }
 }
