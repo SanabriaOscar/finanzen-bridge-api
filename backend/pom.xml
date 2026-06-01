@@ -136,10 +136,80 @@
                 </plugins>
             </build>
         </profile>
+        <!-- Ejecutable portable (no requiere WiX). Salida: dist/finanzen-bridge/finanzen-bridge.exe -->
         <profile>
             <id>win-exe</id>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>clean-jpackage-app-image</id>
+                                <phase>prepare-package</phase>
+                                <goals><goal>run</goal></goals>
+                                <configuration>
+                                    <target>
+                                        <delete dir="${bridge.dist.dir}/finanzen-bridge" quiet="true" failonerror="false"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.panteleyev</groupId>
+                        <artifactId>jpackage-maven-plugin</artifactId>
+                        <version>1.6.5</version>
+                        <configuration>
+                            <name>finanzen-bridge</name>
+                            <appVersion>1.0.0</appVersion>
+                            <vendor>Finnazen</vendor>
+                            <description>Finnazen Bridge POS — hardware local</description>
+                            <destination>${bridge.dist.dir}</destination>
+                            <input>${project.build.directory}</input>
+                            <mainJar>${project.build.finalName}.jar</mainJar>
+                            <mainClass>com.finnazen.bridge.FinnazenBridgeApplication</mainClass>
+                            <javaOptions>
+                                <option>-Dfile.encoding=UTF-8</option>
+                            </javaOptions>
+                            <type>APP_IMAGE</type>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>jpackage-exe</id>
+                                <phase>package</phase>
+                                <goals><goal>jpackage</goal></goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- Instalador .exe (requiere WiX 3+ en PATH: https://wixtoolset.org) -->
+        <profile>
+            <id>win-installer</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>clean-jpackage-installer</id>
+                                <phase>prepare-package</phase>
+                                <goals><goal>run</goal></goals>
+                                <configuration>
+                                    <target>
+                                        <delete file="${bridge.dist.dir}/finanzen-bridge-1.0.0.exe" quiet="true" failonerror="false"/>
+                                        <delete dir="${bridge.dist.dir}/finanzen-bridge" quiet="true" failonerror="false"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.panteleyev</groupId>
                         <artifactId>jpackage-maven-plugin</artifactId>
@@ -159,11 +229,11 @@
                             <winMenu>true</winMenu>
                             <winShortcut>true</winShortcut>
                             <winDirChooser>true</winDirChooser>
-                            <type>exe</type>
+                            <type>EXE</type>
                         </configuration>
                         <executions>
                             <execution>
-                                <id>jpackage-exe</id>
+                                <id>jpackage-installer</id>
                                 <phase>package</phase>
                                 <goals><goal>jpackage</goal></goals>
                             </execution>

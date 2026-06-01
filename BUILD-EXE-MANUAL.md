@@ -87,10 +87,20 @@ mvn clean package -Pwith-ui,win-exe
 
 **Duración estimada:** 5–15 minutos la primera vez (descarga Node, npm packages, Maven deps).
 
-### Paso C — Ubicación del `.exe`
+### Paso C — Ubicación del ejecutable
+
+Con `-Pwin-exe` (imagen portable, **sin WiX**):
 
 ```
-backend\dist\finanzen-bridge-1.0.0.exe
+backend\dist\finanzen-bridge\finanzen-bridge.exe
+```
+
+Doble clic en ese `.exe` para arrancar el bridge (no es un asistente de instalación).
+
+Instalador tipo setup (`finanzen-bridge-1.0.0.exe`) — requiere **WiX 3+** en PATH:
+
+```powershell
+mvn clean package "-Pwith-ui,win-installer"
 ```
 
 También se genera el JAR (útil para pruebas):
@@ -147,29 +157,65 @@ Tras arrancar, abra **http://127.0.0.1:9095/** — el panel debe mostrar **Conec
 
 ---
 
-## 7. Instalar y usar el `.exe` (usuario final)
+## 7. Dos tipos de entregable (no confundir)
 
-### Crear el instalador (una sola vez, en tu PC de desarrollo)
+| Perfil Maven | Archivo que repartes | Experiencia usuario | ¿Aparece en Aplicaciones de Windows? | ¿Desinstalar desde Configuración? |
+|--------------|----------------------|---------------------|--------------------------------------|-----------------------------------|
+| **`win-exe`** | Carpeta `dist\finanzen-bridge\` (copiar entera) | Doble clic → corre ya | No | No |
+| **`win-installer`** | Un solo `dist\finanzen-bridge-1.0.0.exe` | Asistente Siguiente → Instalar | **Sí** | **Sí** |
+
+Para **muchas PCs de cajero** (descargar/copiar → instalar → desinstalar cuando quieran), usa **`win-installer`**.
+
+---
+
+## 7b. Instalador para distribución (Siguiente → Siguiente → Aplicaciones de Windows)
+
+### Paso 1 — Instalar WiX (solo en tu PC de desarrollo, una vez)
+
+1. Descarga **WiX Toolset 3.11 o 3.14** (`.exe`): [releases WiX v3](https://github.com/wixtoolset/wix3/releases)
+2. Instálalo con las opciones por defecto.
+3. Agrega al **PATH** de Windows (ajusta la versión si es distinta):
+
+   `C:\Program Files (x86)\WiX Toolset v3.14\bin`
+
+4. Cierra y abre **PowerShell** o Git Bash. Verifica:
 
 ```powershell
-cd "...\finanzen-bridge-api\backend"
-$env:JAVA_HOME = "C:\Program Files\Java\jdk-21.0.10"
-mvn clean package "-Pwith-ui,win-exe"
+candle.exe -?
+light.exe -?
 ```
 
-Salida: `backend\dist\finanzen-bridge-1.0.0.exe` (5–15 min la primera vez).
+Si ambos responden, WiX está listo.
 
-### Instalar en tu PC (Siguiente → Siguiente → Finalizar)
+### Paso 2 — Generar el instalador
+
+```powershell
+$env:JAVA_HOME = "C:\Program Files\Java\jdk-21.0.10"
+cd "...\finanzen-bridge-api\backend"
+
+# Si ya compilaste el front: npm run build en ..\frontend
+mvn clean package "-Pwith-ui,win-installer"
+```
+
+**Archivo para repartir** (USB, correo, descarga):
+
+```
+backend\dist\finanzen-bridge-1.0.0.exe
+```
+
+Ese **único archivo** es el que copian los cajeros. No envíes la carpeta `finanzen-bridge\` del perfil portable.
+
+### Paso 3 — En cada PC del cajero
 
 1. Doble clic en **`finanzen-bridge-1.0.0.exe`**
-2. **Siguiente** → elija carpeta (ej. `C:\Program Files\Finnazen Bridge`) → **Siguiente**
-3. Marque “crear acceso directo en el escritorio” si aparece → **Instalar**
-4. **Finalizar**
-5. Abra **Finnazen Bridge** desde el menú Inicio o el escritorio
-6. Se abre el navegador en **http://127.0.0.1:9095/** con el panel local
-7. Conecte la **XPrinter 80 mm** USB; pruebe **Prueba impresora**
+2. **Siguiente** → carpeta (ej. `C:\Program Files\Finnazen Bridge`) → **Siguiente**
+3. Acceso directo en menú Inicio / escritorio (según opciones del asistente) → **Instalar** → **Finalizar**
+4. Abrir **Finnazen Bridge** desde Inicio
+5. Navegador en **http://127.0.0.1:9095/** — impresora / lector QR
 
-**No necesita instalar Java** en la PC del cajero: el `.exe` trae Java embebido.
+**Desinstalar:** Configuración → Aplicaciones → buscar **Finnazen** / **finanzen-bridge** → Desinstalar.
+
+**No necesita Java** instalado en la PC del cajero.
 
 **Token por defecto (desarrollo):** `finnazen-bridge-local-dev`
 
@@ -199,15 +245,86 @@ localStorage.setItem('finnazen.bridge.pairingToken', 'mi-token-secreto-largo');
 - Debes usar **JDK completo**, no JRE
 - Verifica: `"$env:JAVA_HOME\bin\jpackage.exe"` existe
 
-### Fallo en `npm install` / Angular build
+### `Can not find WiX tools (light.exe, candle.exe)`
+
+El perfil **`win-installer`** genera un instalador y necesita [WiX Toolset](https://wixtoolset.org) en el PATH.
+
+Para uso diario en tu PC, usa solo **`win-exe`** (genera `dist\finanzen-bridge\finanzen-bridge.exe` portable, sin WiX).
+
+### `Application destination directory ...\dist\finanzen-bridge already exists`
+
+`jpackage` no sobrescribe una carpeta de un build anterior. El front y el JAR **sí compilaron**; solo falló el último paso.
+
+**Opción A — usar el exe que ya está** (si acabas de generarlo antes):
+
+```
+backend\dist\finanzen-bridge\finanzen-bridge.exe
+```
+
+**Opción B — regenerar** (Git Bash):
+
+```bash
+rm -rf dist/finanzen-bridge
+mvn package -Pwin-exe
+```
+
+(Sin `-Pwith-ui` si ya corriste `npm run build` en `frontend/`.)
+
+**Opción C — build completo** (el `pom.xml` ya borra `dist/finanzen-bridge` antes de `jpackage`):
+
+```bash
+mvn clean package "-Pwith-ui,win-exe"
+```
+
+### Fallo en `npm install` / Angular build (`npm run build` exit 1)
+
+Maven a veces **no muestra** el error real de Angular. Haz esto en **PowerShell** (no Git Bash):
 
 ```powershell
-cd ..\frontend
-npm install
+cd finanzen-bridge-api\frontend
+Remove-Item -Recurse -Force node_modules, dist -ErrorAction SilentlyContinue
+npm install --ignore-scripts
 npm run build
 ```
 
-Si compila manual, vuelve a `backend` y ejecuta `mvn package -Pwin-exe` (sin `-Pwith-ui` si el dist ya existe).
+Si `npm run build` falla aquí, copia el mensaje completo (líneas `error TS` o `NG`).
+
+Si **sí compila**, genera el `.exe` sin recompilar el front:
+
+```powershell
+cd ..\backend
+$env:JAVA_HOME = "C:\Program Files\Java\jdk-21.0.10"
+mvn clean package -Pwith-ui,win-exe
+```
+
+O solo el instalador (UI ya en `frontend\dist`):
+
+```powershell
+mvn clean package -Pwin-exe
+```
+
+**Git Bash + `npm ERR! Cannot read properties of undefined (reading 'stdin')`:**
+
+Es un bug de **npm 9** en MINGW64, no de Angular. Opciones (cualquiera):
+
+```bash
+# 1) Sin npm — recomendado en Git Bash
+node ./node_modules/@angular/cli/bin/ng.js build finanzen-bridge-ui --configuration production
+
+# 2) Script Windows
+./build.cmd
+
+# 3) Tras actualizar .npmrc (script-shell=cmd.exe), reintenta:
+npm run build
+
+# 4) Subir npm a 10+ y reintentar
+npm install -g npm@10
+npm run build
+```
+
+Mejor aún: usa **PowerShell** para `npm run build` y `mvn package`.
+
+**Rutas con espacios** (`Oscar Jesus Sanabria`, `9-finanzen fix temas experienca`): si sigue fallando, prueba clonar/compilar en una ruta corta, por ejemplo `C:\dev\finanzen-bridge`.
 
 ### SmartScreen bloquea el `.exe`
 
