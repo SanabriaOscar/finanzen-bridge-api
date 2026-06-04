@@ -2,6 +2,7 @@ package com.finnazen.bridge.infrastructure.hardware;
 
 import com.finnazen.bridge.application.port.out.PrinterPort;
 import com.finnazen.bridge.config.BridgeProperties;
+import com.finnazen.bridge.config.BridgeRuntimePrinterConfig;
 import com.finnazen.bridge.domain.model.PrintTicketCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,10 +32,12 @@ public class EscPosPrinterAdapter implements PrinterPort {
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale.forLanguageTag("es-CO"));
 
     private final BridgeProperties properties;
+    private final BridgeRuntimePrinterConfig runtimePrinterConfig;
     private volatile PrintService cachedService;
 
-    public EscPosPrinterAdapter(BridgeProperties properties) {
+    public EscPosPrinterAdapter(BridgeProperties properties, BridgeRuntimePrinterConfig runtimePrinterConfig) {
         this.properties = properties;
+        this.runtimePrinterConfig = runtimePrinterConfig;
     }
 
     @Override
@@ -75,7 +78,7 @@ public class EscPosPrinterAdapter implements PrinterPort {
             if (text.isBlank()) {
                 enc.blankLines(1);
             } else {
-                enc.line(truncate(text, cols));
+                enc.line(text.length() <= cols ? text : truncate(text, cols));
             }
             enc.bold(false);
         }
@@ -85,7 +88,7 @@ public class EscPosPrinterAdapter implements PrinterPort {
         EscPosEncoder enc = EscPosEncoder.create()
                 .alignCenter()
                 .bold(true)
-                .line(truncate(safe(command.businessName(), "FINNAZEN"), cols))
+                .line(truncate(safe(command.businessName(), ThermalPrintConstants.DEFAULT_BUSINESS_NAME), cols))
                 .bold(false);
 
         if (command.dateLabel() != null && !command.dateLabel().isBlank()) {
@@ -134,7 +137,7 @@ public class EscPosPrinterAdapter implements PrinterPort {
                 .bold(false)
                 .alignCenter()
                 .line("Gracias por su compra")
-                .line("Finnazen POS")
+                .line(ThermalPrintConstants.FOOTER_SOFTWARE)
                 .blankLines(2)
                 .cutPartial();
 
@@ -148,9 +151,9 @@ public class EscPosPrinterAdapter implements PrinterPort {
         byte[] data = EscPosEncoder.create()
                 .alignCenter()
                 .bold(true)
-                .line("FINNAZEN")
+                .line(ThermalPrintConstants.TEST_PAGE_TITLE)
                 .bold(false)
-                .line("prueba finazen")
+                .line(ThermalPrintConstants.TEST_PAGE_SUBTITLE)
                 .line(now)
                 .blankLines(2)
                 .cutPartial()
@@ -255,10 +258,10 @@ public class EscPosPrinterAdapter implements PrinterPort {
         if (command.paperWidthMm() != null && command.paperWidthMm() > 0) {
             return EscPosEncoder.columnsForPaperWidth(command.paperWidthMm());
         }
-        return EscPosEncoder.columnsForPaperWidth(properties.printer().paperWidthMm());
+        return EscPosEncoder.columnsForPaperWidth(runtimePrinterConfig.getPaperWidthMm());
     }
 
     private int lineWidth() {
-        return EscPosEncoder.columnsForPaperWidth(properties.printer().paperWidthMm());
+        return EscPosEncoder.columnsForPaperWidth(runtimePrinterConfig.getPaperWidthMm());
     }
 }

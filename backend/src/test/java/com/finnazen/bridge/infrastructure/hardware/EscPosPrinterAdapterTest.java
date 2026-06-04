@@ -1,5 +1,6 @@
 package com.finnazen.bridge.infrastructure.hardware;
 
+import com.finnazen.bridge.shared.constants.ThermalPrintConstants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -19,14 +20,14 @@ class EscPosPrinterAdapterTest {
     void columns_by_width() {
         assertThat(EscPosEncoder.columnsForPaperWidth(80)).isEqualTo(EscPosEncoder.COLS_80MM);
         assertThat(EscPosEncoder.columnsForPaperWidth(58)).isEqualTo(EscPosEncoder.COLS_58MM);
-        assertThat(EscPosEncoder.columnsForPaperWidth(50)).isEqualTo(EscPosEncoder.COLS_50MM);
+        assertThat(EscPosEncoder.columnsForPaperWidth(50)).isEqualTo(EscPosEncoder.COLS_58MM);
     }
 
     @Test
     @DisplayName("EscPosEncoder genera bytes de corte")
     void encoder_includesCutCommand() {
         byte[] data = EscPosEncoder.create()
-                .line("prueba finazen")
+                .line(ThermalPrintConstants.TEST_PAGE_SUBTITLE)
                 .cutPartial()
                 .toBytes();
         assertThat(data.length).isGreaterThan(4);

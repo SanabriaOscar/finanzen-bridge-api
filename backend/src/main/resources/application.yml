@@ -15,7 +15,7 @@ finnazen:
       enabled: true
       # Xprinter XP-58IIT — térmica 58 mm, ESC/POS, USB
       name: ${BRIDGE_PRINTER_NAME:XP-58}
-      paper-width-mm: 50
+      paper-width-mm: 58
 
 server:
   port: ${finnazen.bridge.port}

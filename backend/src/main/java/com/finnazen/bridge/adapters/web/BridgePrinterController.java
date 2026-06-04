@@ -3,6 +3,7 @@ package com.finnazen.bridge.adapters.web;
 import com.finnazen.bridge.application.port.out.PrinterPort;
 import com.finnazen.bridge.infrastructure.hardware.EscPosPrinterAdapter;
 import com.finnazen.bridge.shared.constants.BridgeConstants;
+import com.finnazen.bridge.shared.constants.ThermalPrintConstants;
 import com.finnazen.bridge.shared.response.BridgeResponse;
 import com.finnazen.bridge.shared.response.BridgeResponseFactory;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +47,7 @@ public class BridgePrinterController {
         printerPort.printTestPage();
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("status", "TEST_OK");
-        data.put("message", "prueba finazen enviada a la impresora");
+        data.put("message", ThermalPrintConstants.MSG_TEST_PRINT_SENT);
         if (printerPort instanceof EscPosPrinterAdapter escPos) {
             data.put("printer", escPos.resolvedPrinterName());
         }

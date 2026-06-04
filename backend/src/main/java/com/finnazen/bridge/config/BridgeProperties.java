@@ -1,5 +1,6 @@
 package com.finnazen.bridge.config;
 
+import com.finnazen.bridge.application.support.PosPrinterWidthSupport;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "finnazen.bridge")
@@ -26,7 +27,7 @@ public record BridgeProperties(
     public record PrinterProperties(boolean enabled, String name, int paperWidthMm) {
         public PrinterProperties {
             if (paperWidthMm <= 0) {
-                paperWidthMm = 80;
+                paperWidthMm = PosPrinterWidthSupport.DEFAULT_MM;
             }
         }
     }

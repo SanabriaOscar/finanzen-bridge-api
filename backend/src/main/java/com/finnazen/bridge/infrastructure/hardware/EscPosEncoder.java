@@ -6,16 +6,16 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Generador mínimo de bytes ESC/POS para XPrinter POS (80 mm, fuente A ≈ 48 cols).
+ * Generador mínimo de bytes ESC/POS para XPrinter POS (58/80 mm, fuente A).
+ * Columnas alineadas con {@code ThermalPaperLayoutSupport} del API REST.
  */
 public final class EscPosEncoder {
 
-    /** Caracteres por línea en rollo 80 mm (fuente ESC/POS normal 12×24). */
-    public static final int COLS_80MM = 48;
-    /** Caracteres por línea en rollo 58 mm. */
-    public static final int COLS_58MM = 32;
-    /** Caracteres por línea en rollo 50 mm (XP-58 estrecho). */
-    public static final int COLS_50MM = 24;
+    public static final int COLS_50MM = 40;
+    public static final int COLS_58MM = 50;
+    public static final int COLS_80MM = 56;
+
+    private static final int PAPER_MARGIN_MM = 8;
 
     private static final Charset CHARSET = StandardCharsets.ISO_8859_1;
 
@@ -63,10 +63,13 @@ public final class EscPosEncoder {
         if (paperWidthMm >= 80) {
             return COLS_80MM;
         }
-        if (paperWidthMm <= 50) {
-            return COLS_50MM;
+        if (paperWidthMm == 50) {
+            return COLS_58MM;
         }
-        return COLS_58MM;
+        if (paperWidthMm >= 58) {
+            return COLS_58MM;
+        }
+        return Math.max(COLS_50MM, paperWidthMm - PAPER_MARGIN_MM);
     }
 
     public EscPosEncoder blankLines(int count) {

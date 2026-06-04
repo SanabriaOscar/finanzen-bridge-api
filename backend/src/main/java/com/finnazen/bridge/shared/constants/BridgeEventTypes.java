@@ -19,6 +19,7 @@ public final class BridgeEventTypes {
     public static final String REQUEST_WEIGHT = "REQUEST_WEIGHT";
     public static final String TEST_PRINTER = "TEST_PRINTER";
     public static final String RESTART_DEVICE = "RESTART_DEVICE";
+    public static final String SET_PRINTER_CONFIG = "SET_PRINTER_CONFIG";
     public static final String PING = "PING";
     public static final String GET_STATUS = "GET_STATUS";
 }

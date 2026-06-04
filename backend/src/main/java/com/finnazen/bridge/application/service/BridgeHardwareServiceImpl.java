@@ -8,12 +8,14 @@ import com.finnazen.bridge.application.port.out.BridgeEventPublisherPort;
 import com.finnazen.bridge.application.port.out.PrinterPort;
 import com.finnazen.bridge.application.port.out.ScalePort;
 import com.finnazen.bridge.config.BridgeProperties;
+import com.finnazen.bridge.config.BridgeRuntimePrinterConfig;
 import com.finnazen.bridge.domain.model.BridgeEnvelope;
 import com.finnazen.bridge.domain.model.PrintTicketCommand;
 import com.finnazen.bridge.domain.model.WeightReading;
 import com.finnazen.bridge.shared.constants.BridgeConstants;
 import com.finnazen.bridge.shared.constants.BridgeEventTypes;
 import com.finnazen.bridge.shared.constants.ThermalPrintConstants;
+import com.finnazen.bridge.application.support.PosPrinterWidthSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -32,18 +34,21 @@ public class BridgeHardwareServiceImpl implements IBridgeHardwareService {
     private final BridgeEventPublisherPort publisher;
     private final BridgeProperties properties;
     private final ObjectMapper objectMapper;
+    private final BridgeRuntimePrinterConfig runtimePrinterConfig;
     private double lastWeight = -1;
 
     public BridgeHardwareServiceImpl(ScalePort scalePort,
                                      PrinterPort printerPort,
                                      BridgeEventPublisherPort publisher,
                                      BridgeProperties properties,
-                                     ObjectMapper objectMapper) {
+                                     ObjectMapper objectMapper,
+                                     BridgeRuntimePrinterConfig runtimePrinterConfig) {
         this.scalePort = scalePort;
         this.printerPort = printerPort;
         this.publisher = publisher;
         this.properties = properties;
         this.objectMapper = objectMapper;
+        this.runtimePrinterConfig = runtimePrinterConfig;
     }
 
     @Override
@@ -55,6 +60,7 @@ public class BridgeHardwareServiceImpl implements IBridgeHardwareService {
             case BridgeEventTypes.PRINT_TICKET -> printTicket(root.path("payload"));
             case BridgeEventTypes.TEST_PRINTER -> testPrinter();
             case BridgeEventTypes.OPEN_CASH_DRAWER -> openDrawer();
+            case BridgeEventTypes.SET_PRINTER_CONFIG -> setPrinterConfig(root.path("payload"));
             case BridgeEventTypes.SCANNER_INPUT -> relayScannerInput(root.path("payload"));
             default -> errorEnvelope("Comando no soportado: " + type);
         };
@@ -68,6 +74,7 @@ public class BridgeHardwareServiceImpl implements IBridgeHardwareService {
         payload.put("clients", publisher.activeClients());
         payload.put("scaleAvailable", scalePort.isAvailable());
         payload.put("printerAvailable", printerPort.isAvailable());
+        payload.put("paperWidthMm", runtimePrinterConfig.getPaperWidthMm());
         payload.put("host", properties.host());
         payload.put("port", properties.port());
         return envelope(BridgeEventTypes.BRIDGE_READY, payload);
@@ -151,6 +158,15 @@ public class BridgeHardwareServiceImpl implements IBridgeHardwareService {
         } catch (Exception ex) {
             return errorEnvelope(ex.getMessage());
         }
+    }
+
+    private BridgeEnvelope setPrinterConfig(JsonNode payload) {
+        int mm = payload.path("paperWidthMm").asInt(runtimePrinterConfig.getPaperWidthMm());
+        runtimePrinterConfig.setPaperWidthMm(PosPrinterWidthSupport.normalize(mm));
+        ObjectNode ok = objectMapper.createObjectNode();
+        ok.put("paperWidthMm", runtimePrinterConfig.getPaperWidthMm());
+        ok.put("status", "OK");
+        return envelope(BridgeEventTypes.PRINT_STATUS, ok);
     }
 
     private BridgeEnvelope openDrawer() {

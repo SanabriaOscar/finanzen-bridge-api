@@ -6,6 +6,7 @@ import com.finnazen.bridge.application.port.out.BridgeEventPublisherPort;
 import com.finnazen.bridge.application.port.out.PrinterPort;
 import com.finnazen.bridge.application.port.out.ScalePort;
 import com.finnazen.bridge.config.BridgeProperties;
+import com.finnazen.bridge.config.BridgeRuntimePrinterConfig;
 import com.finnazen.bridge.shared.constants.BridgeEventTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,9 +32,10 @@ class BridgeHardwareServiceImplTest {
         BridgeProperties props = new BridgeProperties(
                 "127.0.0.1", 9095, "/ws", "token", false,
                 new BridgeProperties.ScaleProperties(false, "COM1", 0, 500),
-                new BridgeProperties.PrinterProperties(false, "default", 80)
+                new BridgeProperties.PrinterProperties(false, "default", 50)
         );
-        service = new BridgeHardwareServiceImpl(scalePort, printerPort, publisher, props, new ObjectMapper());
+        BridgeRuntimePrinterConfig runtime = new BridgeRuntimePrinterConfig(props);
+        service = new BridgeHardwareServiceImpl(scalePort, printerPort, publisher, props, new ObjectMapper(), runtime);
     }
 
     @Test
