@@ -59,7 +59,10 @@ export class AppComponent implements OnInit, OnDestroy {
       return;
     }
     this.lastScan = code;
-    this.pushLog(BRIDGE_EVENT_TYPES.SCANNER_INPUT, { code, source: 'HID' });
+    this.bridge.send({
+      type: BRIDGE_EVENT_TYPES.SCANNER_INPUT,
+      payload: { code, source: 'HID' },
+    });
     this.scannerBuffer = '';
     this.focusScanner();
   }

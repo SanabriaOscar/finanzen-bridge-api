@@ -14,6 +14,8 @@ public final class EscPosEncoder {
     public static final int COLS_80MM = 48;
     /** Caracteres por línea en rollo 58 mm. */
     public static final int COLS_58MM = 32;
+    /** Caracteres por línea en rollo 50 mm (XP-58 estrecho). */
+    public static final int COLS_50MM = 24;
 
     private static final Charset CHARSET = StandardCharsets.ISO_8859_1;
 
@@ -58,7 +60,13 @@ public final class EscPosEncoder {
     }
 
     public static int columnsForPaperWidth(int paperWidthMm) {
-        return paperWidthMm >= 80 ? COLS_80MM : COLS_58MM;
+        if (paperWidthMm >= 80) {
+            return COLS_80MM;
+        }
+        if (paperWidthMm <= 50) {
+            return COLS_50MM;
+        }
+        return COLS_58MM;
     }
 
     public EscPosEncoder blankLines(int count) {

@@ -56,4 +56,20 @@ class BridgeHardwareServiceImplTest {
         var response = service.handleIncomingCommand("s1", ping);
         assertThat(response.type()).isEqualTo(BridgeEventTypes.BRIDGE_READY);
     }
+
+    @Test
+    @DisplayName("SCANNER_INPUT reenvía a todos los clientes")
+    void scannerInput_relaysToAll() {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode root = mapper.createObjectNode();
+        root.put("type", BridgeEventTypes.SCANNER_INPUT);
+        ObjectNode payload = root.putObject("payload");
+        payload.put("code", "7701234567890");
+        payload.put("source", "HID");
+
+        var response = service.handleIncomingCommand("s1", root);
+
+        assertThat(response.type()).isEqualTo(BridgeEventTypes.SCANNER_INPUT);
+        org.mockito.Mockito.verify(publisher).publishToAll(org.mockito.ArgumentMatchers.any());
+    }
 }
