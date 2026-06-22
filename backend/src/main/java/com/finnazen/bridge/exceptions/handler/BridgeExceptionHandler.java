@@ -1,6 +1,8 @@
 package com.finnazen.bridge.exceptions.handler;
 
 import com.finnazen.bridge.exceptions.BridgeException;
+import com.finnazen.bridge.shared.constants.BridgeConstants;
+import com.finnazen.bridge.shared.logging.BridgeSupportLog;
 import com.finnazen.bridge.shared.response.BridgeResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,13 +18,14 @@ public class BridgeExceptionHandler {
 
     @ExceptionHandler(BridgeException.class)
     public ResponseEntity<BridgeResponse<Object>> handleBridgeException(BridgeException ex) {
+        BridgeSupportLog.errorBridge(log, "BRIDGE_BUSINESS", ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getResponse());
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BridgeResponse<Object>> handleGeneric(Exception ex) {
-        log.error("Error bridge: {}", ex.getMessage());
+        BridgeSupportLog.errorBridge(log, "UNHANDLED", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new BridgeResponse<>(500, ex.getMessage(), null));
+                .body(new BridgeResponse<>(500, BridgeConstants.MSG_PRINT_FAIL, null));
     }
 }
