@@ -70,8 +70,8 @@
 
 .corp-page-header a[mat-stroked-button],
 .corp-page-header button[mat-stroked-button] {
-  border-color: rgba(255, 255, 255, 0.8) !important;
-  color: var(--corp-text-inverse) !important;
+  border-color: rgba(255, 255, 255, 0.8) 
+  color: var(--corp-text-inverse) 
 }
 
 .corp-page-header__actions {
@@ -88,8 +88,8 @@
  * --------------------------------------------------------------------------- */
 .corp-card-header,
 .mat-card-header.corp-card-header {
-  background: var(--color-brand-gradient) !important;
-  color: var(--corp-text-inverse) !important;
+  background: var(--color-brand-gradient) 
+  color: var(--corp-text-inverse) 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -117,8 +117,8 @@
  * --------------------------------------------------------------------------- */
 button.btn-nuevo-empresarial.mat-mdc-raised-button,
 .container-fluid button.btn-nuevo-empresarial.mat-mdc-raised-button {
-  background: var(--color-btn-new-gradient) !important;
-  color: var(--corp-text-inverse) !important;
+  background: var(--color-btn-new-gradient) 
+  color: var(--corp-text-inverse) 
   padding: 10px 24px;
   font-weight: 600;
   font-size: 0.95rem;
@@ -243,7 +243,7 @@ button.btn-nuevo-empresarial:hover,
   .corp-page-header__actions a,
   .corp-page-header__actions button {
     width: 100%;
-    margin: 0 !important;
+    margin: 0 
   }
 }
 
@@ -267,9 +267,9 @@ button.btn-nuevo-empresarial:hover,
 .btn-create-account.btn-corporate-primary,
 .btn-login.btn-corporate-primary,
 .btn-proyectos.btn-corporate-primary {
-  background: var(--color-brand-gradient) !important;
-  color: var(--corp-text-inverse) !important;
-  border-color: var(--corp-primary-900) !important;
+  background: var(--color-brand-gradient) 
+  color: var(--corp-text-inverse) 
+  border-color: var(--corp-primary-900) 
   font-weight: 700;
 }
 
