@@ -15,15 +15,15 @@ button.btn-corporate-primary {
 }
 
 button.btn-corporate-secondary {
-  border: 1px solid var(--corp-border-300);
-  background: var(--corp-bg-white);
+  border: 1px solid var(--findexso-border-300);
+  background: var(--findexso-bg-white);
   border-radius: 8px;
   padding: 0.55rem 0.9rem;
   cursor: pointer;
 }
 
 .scanner-hint {
-  color: var(--corp-text-500);
+  color: var(--findexso-text-500);
   font-size: 0.92rem;
 }
 
@@ -39,7 +39,7 @@ button.btn-corporate-secondary {
   max-width: 420px;
   box-sizing: border-box;
   padding: 0.6rem 0.75rem;
-  border: 2px solid var(--corp-primary-500);
+  border: 2px solid var(--findexso-primary-500);
   border-radius: 8px;
   font-size: 1rem;
 }

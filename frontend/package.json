@@ -1,10 +1,10 @@
 {
-  "name": "finanzen-bridge-ui",
+  "name": "findexso-bridge-ui",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "node ./node_modules/@angular/cli/bin/ng.js build finanzen-bridge-ui --configuration production",
-    "start": "node ./node_modules/@angular/cli/bin/ng.js serve finanzen-bridge-ui --port 4300 --configuration development",
+    "build": "node ./node_modules/@angular/cli/bin/ng.js build findexso-bridge-ui --configuration production",
+    "start": "node ./node_modules/@angular/cli/bin/ng.js serve findexso-bridge-ui --port 4300 --configuration development",
     "fix": "npx npm@10.8.2 install --no-fund --no-audit",
     "reinstall": "npx rimraf@5 node_modules && npm run fix"
   },

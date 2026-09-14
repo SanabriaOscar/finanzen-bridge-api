@@ -1,11 +1,11 @@
-# finanzen-bridge-api
+# findexso-bridge-api
 
 Monorepo del puente POS local (backend + frontend en un solo repo).
 
 ## Estructura
 
 ```
-finanzen-bridge-api/
+findexso-bridge-api/
 ├── pom.xml              # Agregador Maven (módulo backend)
 ├── backend/             # Spring Boot 21 — hexagonal, WebSocket, .exe
 │   ├── pom.xml
@@ -21,29 +21,29 @@ finanzen-bridge-api/
 Desde la raíz del repo o desde `backend/`:
 
 ```powershell
-cd finanzen-bridge-api/backend
+cd findexso-bridge-api/backend
 mvn clean package -Pwith-ui
 ```
 
-JAR: `backend/target/finnanzen-bridge-backend-1.0.0-SNAPSHOT.jar`
+JAR: `backend/target/findexso-bridge-backend-1.0.0-SNAPSHOT.jar`
 
 ```powershell
-java -jar backend/target/finnanzen-bridge-backend-1.0.0-SNAPSHOT.jar
+java -jar backend/target/findexso-bridge-backend-1.0.0-SNAPSHOT.jar
 ```
 
-## Build `finanzen-bridge.exe`
+## Build `findexso-bridge.exe`
 
 ```powershell
-cd finanzen-bridge-api/backend
+cd findexso-bridge-api/backend
 mvn clean package -Pwith-ui,win-exe
 ```
 
-Salida: `backend/dist/finnanzen-bridge-1.0.0.exe`
+Salida: `backend/dist/findexso-bridge-1.0.0.exe`
 
 ## Frontend solo (desarrollo)
 
 ```powershell
-cd finanzen-bridge-api/frontend
+cd findexso-bridge-api/frontend
 npm install
 npm start
 ```
@@ -53,7 +53,7 @@ Panel en http://localhost:4300 (requiere bridge en :9095 para WebSocket).
 ## Tests backend
 
 ```powershell
-cd finanzen-bridge-api/backend
+cd findexso-bridge-api/backend
 mvn test
 ```
 
@@ -62,5 +62,5 @@ mvn test
 | Recurso | URL |
 |---------|-----|
 | Panel admin | http://127.0.0.1:9095/ |
-| WebSocket | ws://127.0.0.1:9095/ws?token=finnazen-bridge-local-dev |
+| WebSocket | ws://127.0.0.1:9095/ws?token=findexso-bridge-local-dev |
 | REST status | http://127.0.0.1:9095/api/bridge/status |

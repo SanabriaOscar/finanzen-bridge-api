@@ -5,18 +5,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.finnazen</groupId>
-        <artifactId>finanzen-bridge-api</artifactId>
+        <groupId>com.findexso</groupId>
+        <artifactId>findexso-bridge-api</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>finanzen-bridge-backend</artifactId>
-    <name>Finnazen Bridge Backend</name>
+    <artifactId>findexso-bridge-backend</artifactId>
+    <name>Findexso Bridge Backend</name>
     <description>Spring Boot — WebSocket hardware + REST admin</description>
 
     <properties>
         <bridge.ui.dir>${project.basedir}/../frontend</bridge.ui.dir>
-        <bridge.ui.dist>${bridge.ui.dir}/dist/finanzen-bridge-ui</bridge.ui.dist>
+        <bridge.ui.dist>${bridge.ui.dir}/dist/findexso-bridge-ui</bridge.ui.dist>
         <!-- Entregable instalador Windows (convención module/dist) -->
         <bridge.dist.dir>${project.basedir}/dist</bridge.dist.dir>
     </properties>
@@ -49,6 +49,14 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.6</version>
+                <configuration>
+                    <failIfNoTests>true</failIfNoTests>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
@@ -60,7 +68,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.finnazen.bridge.FinnazenBridgeApplication</mainClass>
+                    <mainClass>com.findexso.bridge.FindexsoBridgeApplication</mainClass>
                 </configuration>
             </plugin>
             <plugin>
@@ -136,7 +144,7 @@
                 </plugins>
             </build>
         </profile>
-        <!-- Ejecutable portable (no requiere WiX). Salida: dist/finanzen-bridge/finanzen-bridge.exe -->
+        <!-- Ejecutable portable (no requiere WiX). Salida: dist/findexso-bridge/findexso-bridge.exe -->
         <profile>
             <id>win-exe</id>
             <build>
@@ -152,7 +160,7 @@
                                 <goals><goal>run</goal></goals>
                                 <configuration>
                                     <target>
-                                        <delete dir="${bridge.dist.dir}/finanzen-bridge" quiet="true" failonerror="false"/>
+                                        <delete dir="${bridge.dist.dir}/findexso-bridge" quiet="true" failonerror="false"/>
                                     </target>
                                 </configuration>
                             </execution>
@@ -163,14 +171,14 @@
                         <artifactId>jpackage-maven-plugin</artifactId>
                         <version>1.6.5</version>
                         <configuration>
-                            <name>finanzen-bridge</name>
+                            <name>findexso-bridge</name>
                             <appVersion>1.0.0</appVersion>
-                            <vendor>Finnazen</vendor>
-                            <description>Finnazen Bridge POS — hardware local</description>
+                            <vendor>Findexso</vendor>
+                            <description>Findexso Bridge POS — hardware local</description>
                             <destination>${bridge.dist.dir}</destination>
                             <input>${project.build.directory}</input>
                             <mainJar>${project.build.finalName}.jar</mainJar>
-                            <mainClass>com.finnazen.bridge.FinnazenBridgeApplication</mainClass>
+                            <mainClass>com.findexso.bridge.FindexsoBridgeApplication</mainClass>
                             <javaOptions>
                                 <option>-Dfile.encoding=UTF-8</option>
                             </javaOptions>
@@ -203,8 +211,8 @@
                                 <goals><goal>run</goal></goals>
                                 <configuration>
                                     <target>
-                                        <delete file="${bridge.dist.dir}/finanzen-bridge-1.0.0.exe" quiet="true" failonerror="false"/>
-                                        <delete dir="${bridge.dist.dir}/finanzen-bridge" quiet="true" failonerror="false"/>
+                                        <delete file="${bridge.dist.dir}/findexso-bridge-1.0.0.exe" quiet="true" failonerror="false"/>
+                                        <delete dir="${bridge.dist.dir}/findexso-bridge" quiet="true" failonerror="false"/>
                                     </target>
                                 </configuration>
                             </execution>
@@ -215,14 +223,14 @@
                         <artifactId>jpackage-maven-plugin</artifactId>
                         <version>1.6.5</version>
                         <configuration>
-                            <name>finanzen-bridge</name>
+                            <name>findexso-bridge</name>
                             <appVersion>1.0.0</appVersion>
-                            <vendor>Finnazen</vendor>
-                            <description>Finnazen Bridge POS — hardware local</description>
+                            <vendor>Findexso</vendor>
+                            <description>Findexso Bridge POS — hardware local</description>
                             <destination>${bridge.dist.dir}</destination>
                             <input>${project.build.directory}</input>
                             <mainJar>${project.build.finalName}.jar</mainJar>
-                            <mainClass>com.finnazen.bridge.FinnazenBridgeApplication</mainClass>
+                            <mainClass>com.findexso.bridge.FindexsoBridgeApplication</mainClass>
                             <javaOptions>
                                 <option>-Dfile.encoding=UTF-8</option>
                             </javaOptions>

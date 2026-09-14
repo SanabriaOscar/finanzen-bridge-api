@@ -10,7 +10,7 @@ Causa: `node_modules` incompleto o corrupto. **`npm i` con npm 9 puede decir "up
 
 ## Solución (Git Bash o PowerShell)
 
-Desde `finanzen-bridge-api/frontend`:
+Desde `findexso-bridge-api/frontend`:
 
 ```bash
 # 1. Detenga ng serve (Ctrl+C)

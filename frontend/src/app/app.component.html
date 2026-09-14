@@ -1,5 +1,5 @@
 <div class="page">
-  <header class="corp-hero mp-hero">
+  <header class="findexso-hero mp-hero">
     <h1>{{ appName }} — Panel local</h1>
     <p>Administra báscula, impresora y escáner. WebSocket: {{ wsUrl }}</p>
   </header>
@@ -7,7 +7,7 @@
   <section class="card" style="margin-top: 1rem;">
     <p>
       <span class="status-dot" [class.online]="connected" [class.offline]="!connected"></span>
-      {{ connected ? 'Conectado al bridge' : 'Desconectado — inicie finanzen-bridge.exe' }}
+      {{ connected ? 'Conectado al bridge' : 'Desconectado — inicie findexso-bridge.exe' }}
     </p>
     <p>Clientes WS: {{ clients }} · Báscula: {{ scaleAvailable ? 'Sí' : 'No' }} · Impresora: {{ printerAvailable ? 'Sí' : 'No' }}</p>
     <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.75rem;">
@@ -44,7 +44,7 @@
 
   <section class="card" style="margin-top: 1rem;">
     <h2 style="margin-top:0;">Eventos</h2>
-    <p *ngIf="!logs.length" style="color: var(--corp-text-500);">Sin eventos aún.</p>
+    <p *ngIf="!logs.length" style="color: var(--findexso-text-500);">Sin eventos aún.</p>
     <ul style="margin:0; padding-left: 1.1rem;">
       <li *ngFor="let log of logs">{{ log }}</li>
     </ul>

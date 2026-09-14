@@ -1,9 +1,9 @@
-finnazen:
+findexso:
   bridge:
     host: 127.0.0.1
     port: 9095
     ws-path: /ws
-    pairing-token: ${BRIDGE_PAIRING_TOKEN:finnazen-bridge-local-dev}
+    pairing-token: ${BRIDGE_PAIRING_TOKEN:findexso-bridge-local-dev}
     open-browser-on-start: true
     scale:
       # true + mock-weight-kg para pruebas sin báscula física; true + port-name para COM real (fase serial)
@@ -18,13 +18,13 @@ finnazen:
       paper-width-mm: 58
 
 server:
-  port: ${finnazen.bridge.port}
-  address: ${finnazen.bridge.host}
+  port: ${findexso.bridge.port}
+  address: ${findexso.bridge.host}
 
 spring:
   application:
-    name: finnazen-bridge
+    name: findexso-bridge
 
 logging:
   level:
-    com.finnazen.bridge: INFO
+    com.findexso.bridge: INFO

@@ -87,6 +87,6 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  readonly appName = 'Finnazen Bridge';
+  readonly appName = 'Findexso Bridge';
   readonly wsUrl = `ws://${BRIDGE_LOCAL.DEFAULT_HOST}:${BRIDGE_LOCAL.DEFAULT_PORT}${BRIDGE_LOCAL.WS_PATH}`;
 }

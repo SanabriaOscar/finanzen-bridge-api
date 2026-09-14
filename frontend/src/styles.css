@@ -1,11 +1,11 @@
-@import './styles/corp-colors.css';
-@import './styles/corp-components.css';
+@import './styles/findexso-colors.css';
+@import './styles/findexso-components.css';
 
 body {
   margin: 0;
   font-family: Segoe UI, Roboto, Arial, sans-serif;
   background: var(--color-shell-content-bg);
-  color: var(--corp-text-900);
+  color: var(--findexso-text-900);
 }
 
 .page {
@@ -15,8 +15,8 @@ body {
 }
 
 .card {
-  background: var(--corp-bg-white);
-  border: 1px solid var(--corp-border-300);
+  background: var(--findexso-bg-white);
+  border: 1px solid var(--findexso-border-300);
   border-radius: 14px;
   padding: 1rem 1.25rem;
   box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
@@ -29,5 +29,5 @@ body {
   display: inline-block;
   margin-right: 0.4rem;
 }
-.status-dot.online { background: var(--corp-success-700); }
-.status-dot.offline { background: var(--corp-danger-material); }
+.status-dot.online { background: var(--findexso-success-700); }
+.status-dot.offline { background: var(--findexso-danger-material); }

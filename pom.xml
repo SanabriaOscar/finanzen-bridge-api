@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.finnazen</groupId>
-        <artifactId>finanzen-bridge-parent</artifactId>
+        <groupId>com.findexso</groupId>
+        <artifactId>findexso-bridge-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>finanzen-bridge-api</artifactId>
+    <artifactId>findexso-bridge-api</artifactId>
     <packaging>pom</packaging>
-    <name>Finnazen Bridge API</name>
+    <name>Findexso Bridge API</name>
     <description>Monorepo bridge — backend Spring Boot + frontend Angular</description>
 
     <properties>
