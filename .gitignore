@@ -10,3 +10,6 @@ backend/*.iml
 
 # Logs
 *.log
+# Build / distribution artifacts
+backend/dist/
+*.exe
