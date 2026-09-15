@@ -13,3 +13,10 @@ backend/*.iml
 # Build / distribution artifacts
 backend/dist/
 *.exe
+
+# Local diagnostics and obsolete editor/build outputs
+*.log.*
+*.java~
+*.properties~
+*.xml~
+/bin/
